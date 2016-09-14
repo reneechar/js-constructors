@@ -10,7 +10,12 @@
  * @property {string} description
  * @method   printDetails
  */
+'use strict';
 
+function Spell ( name, cost, description ) {
+   this.name = name;
+   this.cost = cost;
+   this.description = description;
   /**
    * Returns a string of all of the spell's details.
    * The format doesn't matter, as long as it contains the spell name, cost, and description.
@@ -18,7 +23,10 @@
    * @name getDetails
    * @return {string} details containing all of the spells information.
    */
-
+   this.getDetails = function() {
+      return 'name: ' + this.name + ' cost: ' + this.cost + ' description: ' + description;
+   }
+};
 /**
  * A spell that deals damage.
  * We want to keep this code DRY (Don't Repeat Yourself).
