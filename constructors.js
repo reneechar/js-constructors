@@ -16,6 +16,7 @@ function Spell ( name, cost, description ) {
    this.name = name;
    this.cost = cost;
    this.description = description;
+};
   /**
    * Returns a string of all of the spell's details.
    * The format doesn't matter, as long as it contains the spell name, cost, and description.
@@ -23,10 +24,10 @@ function Spell ( name, cost, description ) {
    * @name getDetails
    * @return {string} details containing all of the spells information.
    */
-   this.getDetails = function() {
-      return 'name: ' + this.name + ' cost: ' + this.cost + ' description: ' + description;
-   }
+Spell.prototype.getDetails = function() {
+   return 'name: ' + this.name + ' cost: ' + this.cost + ' description: ' + this.description;
 };
+
 /**
  * A spell that deals damage.
  * We want to keep this code DRY (Don't Repeat Yourself).
@@ -54,7 +55,7 @@ function Spell ( name, cost, description ) {
 function DamageSpell ( name, cost, damage, description ) {
    Spell.call( this, name, cost, description );
    this.damage = damage;
-}
+};
 
 DamageSpell.prototype = Object.create(Spell.prototype);
 
@@ -80,15 +81,26 @@ function Spellcaster( name, health, mana ) {
    this.health = health;
    this.mana = mana;
    this.isAlive = true;
-   this.inflictDamage = function( damage ) {
-      if (damage >= this.health) {
-         this.health = 0;
-         this.isAlive = false;
-      } else {
-         this.health -= damage;
-      }
+};
+
+Spellcaster.prototype.inflictDamage = function( damage ) {
+   if (damage >= this.health) {
+      this.health = 0;
+      this.isAlive = false;
+   } else {
+      this.health -= damage;
    }
-}
+};
+
+Spellcaster.prototype.spendMana = function ( cost ) {
+   if (cost > this.mana) {
+      return false;
+   } else {
+      this.mana -= cost;
+      return true;
+   }
+};
+
 
 
   /**
