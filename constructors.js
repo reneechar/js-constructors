@@ -57,7 +57,9 @@ function DamageSpell ( name, cost, damage, description ) {
    this.damage = damage;
 };
 
-DamageSpell.prototype = Object.create(Spell.prototype);
+DamageSpell.prototype = Object.create(Spell.prototype, {
+   constructor : DamageSpell
+});
 
 
 /**
@@ -83,26 +85,6 @@ function Spellcaster( name, health, mana ) {
    this.isAlive = true;
 };
 
-Spellcaster.prototype.inflictDamage = function( damage ) {
-   if (damage >= this.health) {
-      this.health = 0;
-      this.isAlive = false;
-   } else {
-      this.health -= damage;
-   }
-};
-
-Spellcaster.prototype.spendMana = function ( cost ) {
-   if (cost > this.mana) {
-      return false;
-   } else {
-      this.mana -= cost;
-      return true;
-   }
-};
-
-
-
   /**
    * @method inflictDamage
    *
@@ -114,6 +96,19 @@ Spellcaster.prototype.spendMana = function ( cost ) {
    * @param  {number} damage  Amount of damage to deal to the spellcaster
    */
 
+Spellcaster.prototype.inflictDamage = function( damage ) {
+   if (damage >= this.health && this.isAlive === true) {
+      this.health = 0;
+      this.isAlive = false;
+      return true;
+   } else if (this.isAlive === true) {
+      this.health -= damage;
+      return true;
+   } else {
+      return false;
+   }
+};
+
   /**
    * @method spendMana
    *
@@ -123,6 +118,15 @@ Spellcaster.prototype.spendMana = function ( cost ) {
    * @param  {number} cost      The amount of mana to spend.
    * @return {boolean} success  Whether mana was successfully spent.
    */
+
+Spellcaster.prototype.spendMana = function ( cost ) {
+   if (cost > this.mana) {
+      return false;
+   } else {
+      this.mana -= cost;
+      return true;
+   }
+};
 
   /**
    * @method invoke
@@ -150,3 +154,17 @@ Spellcaster.prototype.spendMana = function ( cost ) {
    * @param  {Spellcaster} target         The spell target to be inflicted.
    * @return {boolean}                    Whether the spell was successfully cast.
    */
+
+Spellcaster.prototype.invoke = function( spell, target ) {
+   if (spell instanceof DamageSpell && target instanceof Spellcaster) {
+      if (this.spendMana(spell.cost) && target.inflictDamage(spell.damage)){
+         return true;
+      } 
+   } else if (spell instanceof Spell && !(spell instanceof DamageSpell)) {
+      if (this.spendMana(spell.cost)){
+         return true;
+      }
+   }
+   return false;  
+   
+};
